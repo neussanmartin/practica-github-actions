@@ -1,0 +1,60 @@
+# ==============================================================================
+# 1. WORKFLOW: Es todo este archivo (.github/workflows/ci.yaml).
+# Define el proceso completo de automatización y su nombre visible en GitHub.
+# ==============================================================================
+name: Validar Calculadora (CI)
+
+# ==============================================================================
+# 2. EVENT (Trigger): El "detonante" que despierta este workflow.
+# Aquí decimos: "actívate cada vez que alguien suba código (push) o abra una PR
+# apuntando a la rama main".
+# ==============================================================================
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# ==============================================================================
+# 3. JOBS: Los bloques grandes de trabajo que realizará el workflow.
+# Si pusieras varios jobs aquí al mismo nivel, correrían todos a la vez.
+# ==============================================================================
+jobs:
+  # Identificador único del Job (solo letras, números, '-' o '_')
+  ejecutar-tests:
+    name: Ejecutar tests con Pytest
+
+    # ============================================================================
+    # 4. RUNNER: La máquina virtual donde se ejecutará este Job.
+    # GitHub enciende un servidor Ubuntu limpio en la nube solo para esta prueba.
+    # ============================================================================
+    runs-on: ubuntu-latest
+
+    # ============================================================================
+    # 5. STEPS: Las tareas individuales que ocurren EN ORDEN estricto (1, 2, 3, 4)
+    # dentro de esa misma máquina Ubuntu.
+    # ============================================================================
+    steps:
+      # --- STEP 1 (usa una ACTION) ---
+      - name: Descargar repositorio
+        # 6. ACTION: Herramienta prefabricada por GitHub (se llama con 'uses:').
+        # Clona tu código dentro de la máquina Ubuntu vacía para poder leerlo.
+        uses: actions/checkout@v4
+
+      # --- STEP 2 (usa otra ACTION) ---
+      - name: Configurar Python
+        # 6. ACTION: Herramienta prefabricada que instala Python 3.11 en Ubuntu.
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # --- STEP 3 (comando propio, SIN Action) ---
+      - name: Instalar dependencias
+        # 'run:' ejecuta un comando normal de terminal escrito por ti.
+        run: pip install pytest
+
+      # --- STEP 4 (comando propio, SIN Action) ---
+      - name: Lanzar pruebas
+        # Ejecuta pytest sobre tu archivo test_calculadora.py.
+        # Si algún assert falla, este paso da error y el workflow se pone en rojo.
+        run: pytest
