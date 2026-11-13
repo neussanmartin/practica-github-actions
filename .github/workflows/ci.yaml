@@ -10,10 +10,7 @@ name: Validar Calculadora (CI)
 # apuntando a la rama main".
 # ==============================================================================
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  workflow_dispatch
 
 # ==============================================================================
 # 3. JOBS: Los bloques grandes de trabajo que realizará el workflow.
